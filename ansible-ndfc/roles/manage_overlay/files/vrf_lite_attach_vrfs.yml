@@ -1,0 +1,16 @@
+---
+# This file is auto-generated
+# DO NOT EDIT MANUALLY
+#
+- vrf_name: AnsibleVRF
+  vrf_id: 150001
+  vlan_id: 2000
+  attach:
+    - ip_address: 10.15.10.14
+      vrf_lite:
+        - peer_vrf: AnsibleVRF
+          interface: Ethernet1/1
+          ipv4_addr: 10.31.0.1/30
+          neighbor_ipv4: 10.31.0.2
+          dot1q: 2
+  deploy: false

@@ -7,27 +7,26 @@
       - "+             Calling Role - [add_inventory]                   +"
       - "----------------------------------------------------------------"
   tags:
-    - ai_local
-    - ai_external
-    - ai_query_poap
+    - ai_fabric
     - ai_poap
+    - ai_external
     - ai_all
 
 - name: Include Tasks to Add Devices to Local Fabric
-  ansible.builtin.import_tasks: add_devices_local.yml
+  ansible.builtin.import_tasks: add_fabric_devices.yml
   tags:
-    - ai_local
+    - ai_fabric
     - ai_all
 
 - name: Include Tasks To Query For POAP Enabled Switches
-  ansible.builtin.import_tasks: query_poap.yml
-  when: fabric_poap.enable_poap
+  ansible.builtin.import_tasks: add_fabric_devices_poap.yml
+  when: fabric_inventory | selectattr('poap', 'defined') | list | length>0
   tags:
-    - ai_query_poap
+    - ai_poap
     - ai_all
 
 - name: Include Tasks to Add Devices to External Fabric
-  ansible.builtin.import_tasks: add_fabric_external.yml
+  ansible.builtin.import_tasks: add_fabric_external_devices.yml
   tags:
     - ai_external
     - ai_all

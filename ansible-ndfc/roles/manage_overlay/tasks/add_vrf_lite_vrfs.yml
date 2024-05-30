@@ -1,0 +1,35 @@
+---
+# ------------------------
+# CREATE VRF-Lite SECTION
+# ------------------------
+
+- name: Create file to hold rendered VRF information
+  ansible.builtin.template:
+    src: vrf_lite_attach_vrfs.j2
+    dest: "{{ role_path }}/files/vrf_lite_attach_vrfs.yml"
+
+- name: Create and store generated VRF configuration
+  ansible.builtin.set_fact:
+    vrf_config: "{{ lookup('file', 'vrf_lite_attach_vrfs.yml') | from_yaml }}"
+
+# --------------------------------------------------------------------
+# Manage VRF-Lite Configuration on NDFC
+# --------------------------------------------------------------------
+- name: Manage NDFC Fabric VRF-Lite VRFs
+  cisco.dcnm.dcnm_vrf:
+    fabric: "{{ fabric_settings.FABRIC_NAME  }}"
+    state: replaced
+    config: "{{ vrf_config }}"
+
+# --------------------------------------------------------------------
+# Save and Deploy Configuration on External Fabric
+# --------------------------------------------------------------------
+- name: save config of fabric {{ fabric_external_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    method: POST
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_external_settings.FABRIC_NAME }}/config-save"
+
+- name: re-deploy inventory {{ fabric_external_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_external_settings.FABRIC_NAME }}/config-deploy?forceShowRun=false"
+    method: POST

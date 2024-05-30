@@ -1,8 +1,7 @@
 ---
 
-- name: Create Host Facing Access Interfaces On Leaf1 and Leaf2
+- name: Create Host Facing Access Interfaces On Leaf Switches
   cisco.dcnm.dcnm_interface:
-    check_deploy: True
+    fabric: "{{ fabric_settings.FABRIC_NAME }}"
+    config: "{{ interfaces.access }}"
     state: merged
-    fabric: "{{ fabric.name }}"
-    config: "{{ interface.access }}"

@@ -1,0 +1,9 @@
+---
+
+- name: Add switches to Fabric {{ fabric_settings.FABRIC_NAME }} in NDFC
+  cisco.dcnm.dcnm_inventory:
+    fabric: "{{ fabric_settings.FABRIC_NAME }}"
+    config: "{{ fabric_inventory | selectattr('poap', 'undefined') | list }}"
+    deploy: false
+    save: true
+    state: merged

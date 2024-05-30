@@ -8,30 +8,19 @@
       - "+             Calling Role - [create_fabric]                   +"
       - "----------------------------------------------------------------"
   tags:
-    - cf_local
+    - cf_vxlan
     - cf_external
     - cf_poap
     - cf_all
 
-- name: Get Fabric List
-  cisco.dcnm.dcnm_rest:
-    method: GET
-    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics"
-  register: create_fabric_result
+- name: Include Tasks To Create Fabric
+  ansible.builtin.import_tasks: manage_fabric.yml
   tags:
-    - cf_local
-    - cf_external
-    - cf_poap
-    - cf_all
-
-- name: Include Tasks To Create Local Fabric
-  ansible.builtin.import_tasks: local_fabric.yml
-  tags:
-    - cf_local
+    - cf_vxlan
     - cf_all
 
 - name: Include Tasks To Create External Fabric
-  ansible.builtin.import_tasks: external_fabric.yml
+  ansible.builtin.import_tasks: manage_external_fabric.yml
   tags:
     - cf_external
     - cf_all

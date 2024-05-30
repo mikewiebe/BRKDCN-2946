@@ -8,23 +8,33 @@
       - "----------------------------------------------------------------"
   tags: vpc_all
 
-- name: Query Fabric {{ fabric.name }} Leaf1 and Leaf2 for VPC Configuration
+- name: Query Fabric {{ fabric_settings.FABRIC_NAME }} Leaf1 and Leaf2 for vPC Configuration
   cisco.dcnm.dcnm_inventory:
-    fabric: "{{ fabric.name }}"
+    fabric: "{{ fabric_settings.FABRIC_NAME }}"
     state: query
-    config:
-      - seed_ip: "{{ fabric.leaf[0].ip }}"
-      - seed_ip: "{{ fabric.leaf[1].ip }}"
+    config: >-
+        {%- set seed_ip_list = [] -%}
+        {%- for switch in fabric_inventory | default([]) -%}
+        {%- if switch.role == 'leaf' -%}
+        {%- set _ = seed_ip_list.append(dict(seed_ip=switch.seed_ip)) -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {{ seed_ip_list }}
   register: query_result
   tags: vpc_all
+  # The above inline Jinja2 template creates the list expected for the config element:
+  # - seed_ip: leaf1_seed_ip
+  # - seed_ip: leaf2_seed_ip
 
 # Use flag variable 'setup_vpc' to track if you need to setup vpc.
 # If it's already setup you can skip it
-- ansible.builtin.set_fact:
+- name: Set Setup vPC Flag to Default True
+  ansible.builtin.set_fact:
     setup_vpc: True
   tags: vpc_all
 
-- ansible.builtin.set_fact:
+- name: Set Setup vPC Flag to False If vPC Pair Is Already Configured
+  ansible.builtin.set_fact:
     setup_vpc: False
   when: item.isVpcConfigured == true
   loop: "{{ query_result.response }}"
@@ -32,27 +42,10 @@
     label: "{{ item.isVpcConfigured }}"
   tags: vpc_all
 
-- debug: msg="Setup VPC IS - {{ setup_vpc }}"
+- ansible.builtin.debug: msg="Setup vPC flag is - {{ setup_vpc }}"
   tags: vpc_all
 
-- name: Setup VPC Peer If Not Already Setup
-  block:
-    - name: Include Tasks To Create VPC Peer Between Leaf1 and Leaf2
-      ansible.builtin.import_tasks: setup_vpc_peer.yml
+- name: Include Tasks To Create vPC Peers Between Leaf1 and Leaf2
+  ansible.builtin.import_tasks: setup_vpc_peer.yml
   when: setup_vpc
-  tags: vpc_all
-
-- name: Query Fabric {{ fabric.name }} Leaf Devices Until vPC Pair Is Configured
-  cisco.dcnm.dcnm_inventory:
-    fabric: "{{ fabric.name }}"
-    state: query
-    config:
-      - seed_ip: "{{ fabric.leaf[0].ip }}"
-      - seed_ip: "{{ fabric.leaf[1].ip }}"
-  register: query_result
-  until:
-    - query_result.response[0].isVpcConfigured
-    - query_result.response[1].isVpcConfigured
-  retries: 120
-  delay: 5
   tags: vpc_all

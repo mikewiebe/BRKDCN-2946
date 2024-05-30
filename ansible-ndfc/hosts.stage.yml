@@ -1,8 +1,7 @@
-
 ---
 # Connection Information For Staging Fabric
 #
-# This file defines how Ansible will connect to the NDFC controller
+# This file defines how Ansible will connect to NDFC
 ndfc:
   children:
     stage:

@@ -1,16 +1,16 @@
 ---
 - name: Create and Apply BGP Network Policy To External Router
   cisco.dcnm.dcnm_policy:
-    fabric: "{{ fabric_external.name }}"
+    fabric: "{{ fabric_external_settings.FABRIC_NAME }}"
     state: merged
     config:
       - switch:
-        - ip: "{{ fabric_external.edge_router[0].ip }}"
+        - ip: "{{ fabric_external_inventory[0].seed_ip }}"
           policies:
             - name: bgp_vrf_network
               create_additional_policy: false
               priority: 500
               policy_vars:
-                BGP_AS: 9999
+                BGP_AS: 65999
                 VRF_NAME: AnsibleVRF
-                IP_PREFIX: "172.16.1.1/32"
+                IP_PREFIX: 172.16.1.1/32

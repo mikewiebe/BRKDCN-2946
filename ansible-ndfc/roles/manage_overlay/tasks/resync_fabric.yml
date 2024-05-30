@@ -1,0 +1,20 @@
+---
+- name: save config of fabric {{ fabric_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    method: POST
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_settings.FABRIC_NAME }}/config-save"
+
+- name: re-deploy inventory {{ fabric_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_settings.FABRIC_NAME }}/config-deploy?forceShowRun=false"
+    method: POST
+
+- name: save config of fabric {{ fabric_external_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    method: POST
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_external_settings.FABRIC_NAME }}/config-save"
+
+- name: re-deploy inventory {{ fabric_external_settings.FABRIC_NAME }}
+  cisco.dcnm.dcnm_rest:
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_external_settings.FABRIC_NAME }}/config-deploy?forceShowRun=false"
+    method: POST

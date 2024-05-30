@@ -1,0 +1,36 @@
+---
+
+- name: Query NDFC for Fabric
+  cisco.dcnm.dcnm_fabric:
+    state: query
+    config:
+      - FABRIC_NAME: "{{ fabric_settings.FABRIC_NAME }}"
+  register: create_fabric_result
+  tags:
+    - cf_vxlan
+    - cf_external
+    - cf_poap
+    - cf_all
+
+- name: Intialize create_fabric_flag
+  ansible.builtin.set_fact:
+    create_fabric_flag: true
+
+- name: Check If Fabric Exists in NDFC
+  ansible.builtin.set_fact:
+    create_fabric_flag: false
+  when: item.fabricName == fabric_settings.FABRIC_NAME
+  loop: "{{ create_fabric_result.response | json_query('[].DATA[]') }}"
+  loop_control:
+    label: "{{ item.fabricName }}"
+
+- name: Check If Fabric Exists in NDFC Log
+  ansible.builtin.debug:
+    msg: "Fabric {{ fabric_settings.FABRIC_NAME }} Already Exists"
+  when: not create_fabric_flag
+
+- name: Create Fabric {{ fabric_settings.FABRIC_NAME }} in NDFC
+  cisco.dcnm.dcnm_fabric:
+    state: merged
+    config: ["{{ fabric_settings }}"]
+  when: create_fabric_flag

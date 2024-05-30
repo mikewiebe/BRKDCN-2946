@@ -1,0 +1,28 @@
+---
+# This file is auto-generated
+# DO NOT EDIT MANUALLY
+#
+- net_name: AnsibleNet1
+  vrf_name: AnsibleVRF
+  net_id: 130001
+  vlan_id: 2301
+  vlan_name: AnsibleNet1_vlan2301
+  gw_ip_subnet: 192.168.11.1/24
+  attach:
+    - ip_address: 10.15.10.12
+      ports: ['Port-channel10']
+    - ip_address: 10.15.10.13
+      ports: ['Port-channel10']
+  deploy: false
+- net_name: AnsibleNet2
+  vrf_name: AnsibleVRF
+  net_id: 130002
+  vlan_id: 2302
+  vlan_name: AnsibleNet2_vlan2302
+  gw_ip_subnet: 192.168.12.1/24
+  attach:
+    - ip_address: 10.15.10.12
+      ports: ['Port-channel10']
+    - ip_address: 10.15.10.13
+      ports: ['Port-channel10']
+  deploy: false

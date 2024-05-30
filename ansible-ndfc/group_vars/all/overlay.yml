@@ -21,3 +21,21 @@ networks:
     vlan_name: AnsibleNet2_vlan2302
     gw_ip_subnet: "192.168.12.1/24"
     attach_group: esxi
+# -------------------------------------
+# New Networks Added Below
+# -------------------------------------
+  - net_name: GitLabNet1
+    vrf_name: *refvrf_ansible
+    net_id: 130003
+    vlan_id: 2303
+    vlan_name: GitLabNet1_vlan2303
+    gw_ip_subnet: "192.168.13.1/24"
+    attach: []
+    attach_group: esxi
+  - net_name: GitLabNet2
+    vrf_name: *refvrf_ansible
+    net_id: 130004
+    vlan_id: 2304
+    vlan_name: GitLabNet2_vlan2304
+    gw_ip_subnet: "192.168.14.1/24"
+    attach_group: esxi

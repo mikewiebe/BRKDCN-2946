@@ -2,13 +2,13 @@
 - name: Create Loopback Interface On External Router
   cisco.dcnm.dcnm_interface:
     check_deploy: True
-    fabric: "{{ fabric_external.name }}"
+    fabric: "{{ fabric_external_settings.FABRIC_NAME }}"
     state: merged
     config:
       - name: "lo0"
         type: lo
         switch:
-          - "{{ fabric_external.edge_router[0].ip }}"
+          - "{{ fabric_external_inventory[0].seed_ip }}"
         deploy: true
         profile:
           admin_state: true

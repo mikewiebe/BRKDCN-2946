@@ -7,7 +7,7 @@
   gather_facts: false
 
   tasks:
-    - name: Verify NDFC {{ fabric.name }} State
+    - name: Verify NDFC {{ fabric_settings.FABRIC_NAME }} State
       cisco.dcnm.dcnm_rest:
         method: GET
         path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics"
@@ -22,29 +22,32 @@
       loop_control:
         label: "{{ item.fabricName }}"
 
-    - ansible.builtin.set_fact:
+    - name: Set NDFC Reset Control Variable
+      ansible.builtin.set_fact:
         fabric_reset: False
-    - ansible.builtin.set_fact:
+
+    - name: Update NDFC Reset Control Variable if Fabric Exists
+      ansible.builtin.set_fact:
         fabric_reset: True
       when: result.response.DATA | length >= 1
 
     - ansible.builtin.debug:
-        msg: "Fabric {{ fabric.name }} has already been reset"
+        msg: "Fabric {{ fabric_settings.FABRIC_NAME }} has already been reset"
       when: fabric_reset == False
 
-    - name: Remove switch devices from NDFC {{ fabric.name }}
+    - name: Remove Switches from NDFC {{ fabric_settings.FABRIC_NAME }}
       cisco.dcnm.dcnm_inventory:
-        fabric: "{{ fabric.name }}"
+        fabric: "{{ fabric_settings.FABRIC_NAME }}"
         state: deleted
       when: fabric_reset
 
-    - name: Delete {{ fabric.name }} from NDFC
+    - name: Delete {{ fabric_settings.FABRIC_NAME }} from NDFC
       cisco.dcnm.dcnm_rest:
         method: DELETE
-        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric.name }}"
+        path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_settings.FABRIC_NAME }}"
       when: fabric_reset
 
-    - name: Verify NDFC {{ fabric.name }} State
+    - name: Verify NDFC {{ fabric_settings.FABRIC_NAME }} State
       cisco.dcnm.dcnm_rest:
         method: GET
         path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics"

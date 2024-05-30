@@ -7,9 +7,15 @@
       - "+             Calling Role - [manage_interfaces]               +"
       - "----------------------------------------------------------------"
   tags:
-    - mi_vpc
     - mi_hosts
+    - mi_vpc
     - mi_loopback
+    - mi_all
+
+- name: Include Tasks To Manage Host Facing Interfaces
+  ansible.builtin.import_tasks: host_interfaces.yml
+  tags:
+    - mi_hosts
     - mi_all
 
 - name: Include Tasks To Manage vPC Interfaces
@@ -23,11 +29,3 @@
   tags:
     - mi_loopback
     - mi_all
-
-
-- name: Include Tasks To Manage Host Facing Interfaces
-  ansible.builtin.import_tasks: host_interfaces.yml
-  tags:
-    - mi_hosts
-    - mi_all
-

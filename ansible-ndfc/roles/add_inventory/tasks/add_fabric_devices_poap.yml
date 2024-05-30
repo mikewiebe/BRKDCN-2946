@@ -1,0 +1,43 @@
+---
+
+- name: Query Until POAP Switch Becomes Available
+  cisco.dcnm.dcnm_rest:
+    method: GET
+    path: "/appcenter/cisco/ndfc/api/v1/lan-fabric/rest/control/fabrics/{{ fabric_settings.FABRIC_NAME }}/inventory/poap"
+  register: result
+  until: result.response.DATA | length > 0
+  retries: 10
+  delay: 1
+  ignore_errors: true
+
+- ansible.builtin.debug:
+    msg: "Serial Number - {{ result.response.DATA[0].serialNumber }}"
+  when: result.response.DATA | length > 0
+
+- name: Set Switch Serial Number
+  ansible.builtin.set_fact:
+    leaf3_serial_number: "{{ result.response.DATA[0].serialNumber }}"
+  when: result.response.DATA | length > 0
+
+- name: Add Switches to {{ fabric_settings.FABRIC_NAME }} Using POAP
+  cisco.dcnm.dcnm_inventory:
+    fabric: "{{ fabric_settings.FABRIC_NAME }}"
+    config: >-
+      {%- set poap_inventory = fabric_inventory | selectattr('poap', 'defined') | list -%}
+      {%- set _ = poap_inventory[0]['poap'][0].update({'serial_number': leaf3_serial_number}) -%}
+      {{ poap_inventory }}
+    state: merged
+  when: result.response.DATA | length > 0
+  # This is what the poap_config variable data looks like:
+  # - seed_ip: 10.15.1.14
+  #   user_name: admin
+  #   password: cisco.123
+  #   role: border
+  #   poap:
+  #     - serial_number: {{ leaf3_serial_number }}
+  #       model: N9K-C9300v
+  #       version: 9.3(8)
+  #       hostname: staging-leaf3
+  #       config_data:
+  #         modulesModel: [N9K-X9364v, N9K-vSUP]
+  #         gateway: 10.15.1.1/24
