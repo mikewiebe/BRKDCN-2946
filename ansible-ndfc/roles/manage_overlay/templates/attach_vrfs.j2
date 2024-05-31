@@ -16,5 +16,5 @@
 {% for switch in vrf_attach_group.all_leaf %}
     - ip_address: {{ switch['ip_address'] }}
 {% endfor %}
-  deploy: false
+  deploy: true
 {% endfor %}

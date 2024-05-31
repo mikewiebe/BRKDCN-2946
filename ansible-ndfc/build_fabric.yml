@@ -7,9 +7,10 @@
   gather_facts: false
 
   roles:
-    - create_fabric
-    - add_inventory # Add This Line Under The create_fabric role from the previous section
-    - setup_vpc # Add This Line Under The add_inventory role from the previous section
-    - manage_interfaces # Add This Line Under The setup_vpc role from the previous section
-    - manage_overlay # Add This Line Under The manage_interfaces role from the previous section
-    - deploy # Add This Line Under The manage_overlay role from the previous section
+    # - create_fabric
+    # - add_inventory
+    # - setup_vpc
+    # - manage_interfaces
+    # - deploy
+
+    - manage_overlay

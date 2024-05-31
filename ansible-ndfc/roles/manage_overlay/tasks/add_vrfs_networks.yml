@@ -34,6 +34,9 @@
     state: replaced
     config: "{{ vrf_config }}"
 
+- name: VRF Configuration
+  debug: msg="{{ vrf_config }}"
+
 # --------------------------------------------------------------------
 # Manage Network Configuration on NDFC
 # --------------------------------------------------------------------
@@ -42,3 +45,6 @@
     fabric: "{{ fabric_settings.FABRIC_NAME }}"
     state: replaced
     config: "{{ net_config }}"
+
+- name: Networks Configuration
+  debug: msg="{{ net_config }}"

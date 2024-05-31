@@ -20,18 +20,18 @@
     - mo_vrfs_nets
     - mo_all
 
-- name: Include Tasks To Re-Sync Local and External Fabric Before Adding VRF Lite
-  ansible.builtin.import_tasks: resync_fabric.yml
-  tags:
-    - mo_vrf_lite
-    - mo_resync
-    - mo_all
+# - name: Include Tasks To Re-Sync Local and External Fabric Before Adding VRF Lite
+#   ansible.builtin.import_tasks: resync_fabric.yml
+#   tags:
+#     - mo_vrf_lite
+#     - mo_resync
+#     - mo_all
 
-- name: Include Tasks To Add Overlay VRFs To VRF Lite Fabric Extensions
-  ansible.builtin.import_tasks: add_vrf_lite_vrfs.yml
-  tags:
-    - mo_vrf_lite
-    - mo_all
+# - name: Include Tasks To Add Overlay VRFs To VRF Lite Fabric Extensions
+#   ansible.builtin.import_tasks: add_vrf_lite_vrfs.yml
+#   tags:
+#     - mo_vrf_lite
+#     - mo_all
 
 #- name: Include Tasks To Add Overlay Networks
 #  ansible.builtin.import_tasks: add_networks.yml
@@ -39,8 +39,8 @@
 #    - mo_networks
 #    - mo_all
 
-- name: Include Tasks To Manage Policies
-  ansible.builtin.import_tasks: add_policies.yml
-  tags:
-    - mo_policies
-    - mo_all
+# - name: Include Tasks To Manage Policies
+#   ansible.builtin.import_tasks: add_policies.yml
+#   tags:
+#     - mo_policies
+#     - mo_all
